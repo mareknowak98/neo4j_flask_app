@@ -14,26 +14,6 @@ class Person:
     def __init__(self, name):
         self.name = name
 
-    # def find(self):
-    #     query = "MATCH (n:Person {name: '" + self.name + "'}) RETURN n"
-    #     result = execute(query)
-    #     print([row["name"] for row in result])
-    #     # if len(result.) > 0:
-    #     return [row["name"] for row in result]
-    #     # return False
-    #
-    # def add(self):
-    #     print("-----")
-    #     print(self.find())
-    #     print(self.name)
-    #     # if not self.find():
-    #     # print(self.find().data().count().)
-    #     query = "CREATE(n:Person {name:'" + self.name + "'})"
-    #     execute(query)
-    #     return True
-    #     # else:
-    #     #     return False
-
     def find(self):
         with graph.session(database="neo4j") as session:
             result = session.execute_read(self._find_and_return_person, self.name)
@@ -69,6 +49,32 @@ class Location:
     def __init__(self, city, state):
         self.city = city
         self.state = state
+
+    def find(self):
+        with graph.session(database="neo4j") as session:
+            result = session.execute_read(self._find_and_return_location, self.city, self.state)
+            return result
+    @staticmethod
+    def _find_and_return_location(tx, city, state):
+        query = "MATCH (n:Location {city:'" + city + "', state:'" + state + "'}) RETURN n"
+        result = tx.run(query)
+        return [dict(row[0]) for row in result]
+
+    def add(self):
+        if not self.find():
+            query = "CREATE (n:Location {city:'" + self.city + "', state:'" + self.state + "'}) RETURN n"
+            execute(query)
+            return True
+        else:
+            return False
+
+    def delete(self):
+        if not self.find():
+            return False
+        else:
+            query = "MATCH (n:Location {city:'" + self.city + "', state:'" + self.state + "'}) DETACH DELETE n"
+            execute(query)
+            return True
 
 def list_all_people():
     with graph.session(database="neo4j") as session:
