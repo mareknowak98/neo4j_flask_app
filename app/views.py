@@ -1,6 +1,7 @@
 from flask import Flask, request, session, redirect, url_for, render_template, flash
-from .models import Person
+from .models import Person, list_all_people, list_all_locations
 import os
+
 
 
 def create_app():
@@ -12,9 +13,9 @@ app.secret_key = os.urandom(24)
 
 @app.route('/', methods=['GET','POST'])
 def index():
-    # p = list_all_persons()
-    # l = list_all_locations()
-    return render_template('index.html')
+    p = list_all_people()
+    l = list_all_locations()
+    return render_template('index.html', persons=p, locations=l)
 
 
 @app.route('/person/add', methods=['GET','POST'])
