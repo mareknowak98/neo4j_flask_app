@@ -4,7 +4,7 @@ from neo4j.exceptions import ServiceUnavailable
 
 graph = GraphDatabase.driver('neo4j+s://1baf8087.databases.neo4j.io', auth=('neo4j', 'GHvoYzAKuJrA88v8eDuoYhfZ3538urq-07A_0OCcz-I'))
 
-
+# simple function to wrap running query
 def execute(query):
     with graph.session(database="neo4j") as session:
         return session.run(query)
@@ -37,8 +37,6 @@ class Person:
     def find(self):
         with graph.session(database="neo4j") as session:
             result = session.execute_read(self._find_and_return_person, self.name)
-            for row in result:
-                print("Found person: {row}".format(row=row))
             return result
 
     @staticmethod
@@ -52,22 +50,20 @@ class Person:
         return [row["name"] for row in result]
 
     def add(self):
-        self.find()
-        return True
+        if not self.find():
+            query = "CREATE(n:Person {name:'" + self.name + "'})"
+            execute(query)
+            return True
+        else:
+            return False
 
-
-# def query_all_people(tx):
-#     query = "MATCH (p:Person) RETURN (p)"
-#     result = tx.run(query)
-#     print(row["name"] for row in result)
-#     return [row["name"] for row in result]
-# def list_all_persons():
-#     with graph.session(database="neo4j") as session:
-#         result = session.execute_read(query_all_people(session))
-#     for row in result:
-#         print("Found person: {row}".format(row=row))
-#     return result
-
+    def delete(self):
+        if not self.find():
+            return False
+        else:
+            query = "MATCH (p:Person {name: '" + self.name + "'}) DETACH DELETE p "
+            execute(query)
+            return True
 
 class Location:
     def __init__(self, city, state):
