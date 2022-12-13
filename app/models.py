@@ -21,12 +21,8 @@ class Person:
 
     @staticmethod
     def _find_and_return_person(tx, name):
-        query = (
-            "MATCH (p:Person) "
-            "WHERE p.name = $name "
-            "RETURN p.name AS name"
-        )
-        result = tx.run(query, name=name)
+        query = "CREATE(n:Person {name:'" + name + "'})"
+        result = tx.run(query)
         return [row["name"] for row in result]
 
     def add(self):
@@ -45,10 +41,16 @@ class Person:
             execute(query)
             return True
 
+
 class Location:
     def __init__(self, city, state):
         self.city = city
         self.state = state
+
+    @staticmethod
+    def _read_wrapper(tx, query):
+        result = tx.run(query)
+        return [dict(row) for row in result]
 
     def find(self):
         with graph.session(database="neo4j") as session:
@@ -76,19 +78,40 @@ class Location:
             execute(query)
             return True
 
+    def add_dist(self, city2, dist):
+        query = "MATCH (a:Location {city: '" + self.city + "', state: '" + self.state + "'}),(b:Location {city: '" + city2.city + "', state: '" + city2.state + "'}) MERGE(a)-[r:DIST {dist: '" + dist +"'}]->(b) RETURN a,b"
+        result = execute(query)
+        return result
+
+    @staticmethod
+    def _find_and_return_distance(tx, query):
+        result = tx.run(query)
+        return [[row["city"], row["relations"]] for row in result]
+    def get_dist(self):
+        query = "OPTIONAL MATCH a= (Location {city: '" + self.city + "', state: '" + self.state + "'}) -[:DIST]-(city) RETURN relationships(a) as relations, city.city as city"
+        with graph.session(database="neo4j") as session:
+            result = session.execute_read(self._find_and_return_distance, query)
+            for elem in result:
+                print(elem)
+            return result
+
+
 def list_all_people():
     with graph.session(database="neo4j") as session:
         return session.execute_read(query_all_people)
+
 
 def query_all_people(tx):
     query = "MATCH (p:Person) RETURN p.name AS name"
     result = tx.run(query)
     return [row["name"] for row in result]
 
+
 def query_all_locations(tx):
     query = "MATCH (n:Location) RETURN (n)"
     result = tx.run(query)
     return [dict(row[0]) for row in result]
+
 def list_all_locations():
     with graph.session(database="neo4j") as session:
         return session.execute_read(query_all_locations)

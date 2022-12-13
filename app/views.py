@@ -52,6 +52,7 @@ def delete_person():
     return render_template('delete_person.html', people = p)
 
 
+# Locations endpoints
 @app.route('/location/add', methods=['GET','POST'])
 def add_location():
     if request.method == 'POST':
@@ -83,12 +84,32 @@ def info_city():
     state = parse_qs(url.query)['state'][0]
     location = Location(city, state)
     # people_live_in = location.get_people_live_in(city)
-    # distances = location.get_dist()
-    # dist_dict = {}
-    # for elem in distances:
-    #     temp1 = elem[1]
-    #     temp2 = elem[0][0]['data']['dist']
-    #     dist_dict[temp1] = temp2
+    distances = location.get_dist()
+    dist_dict = {}
+    for elem in distances:
+        temp1 = elem[0]
+        temp2 = elem[1]
+        dist_dict[temp1] = dict(temp2[-1])
 
     # return render_template('info_city.html', city = location, people_live_in = people_live_in, distances=dist_dict)
-    return render_template('info_city.html', city = location)
+    return render_template('info_city.html', city=location, distances=dist_dict)
+    # return render_template('info_city.html', city = location)
+
+
+@app.route('/distance/add', methods=['GET','POST'])
+def add_distance():
+    if request.method == 'POST':
+        city1 = request.form['city1']
+        city2 = request.form['city2']
+        dist = request.form['dist']
+        city_dict = city1.split(",")
+        city_dict2 = city2.split(",")
+        c1 = city_dict[0][10:-1]
+        s1 = city_dict[1][11:-2]
+        c2 = city_dict2[0][10:-1]
+        s2 = city_dict2[1][11:-2]
+        Location(c1, s1).add_dist(Location(c2, s2), dist)
+        return redirect(url_for('index'))
+    c1 = list_all_locations()
+    c2 = list_all_locations()
+    return render_template('add_distance.html', city1=c1, city2=c2)

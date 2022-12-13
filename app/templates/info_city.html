@@ -13,14 +13,14 @@
 {#    None#}
 {#{%endif %}#}
 {##}
-{#{% if city %}#}
-{#    <h4>Distance to other cities:</h4>#}
-{#    <ul class="list-group">#}
-{#        {% for row in distances %}#}
-{#            <li class="list-group-item list-group-item-action">{{ row }}, dystans: {{ distances[row] }}</li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#{% else %}#}
-{#    None#}
-{#{%endif %}#}
+{% if city %}
+    <h4>Distance to other cities:</h4>
+    <ul class="list-group">
+        {% for row in distances %}
+            <li class="list-group-item list-group-item-action">{{ row }}, distance: {{ distances[row]['dist'] }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    None
+{%endif %}
 {% endblock %}
