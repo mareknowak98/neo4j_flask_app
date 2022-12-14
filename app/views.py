@@ -94,7 +94,7 @@ def info_city():
     city = parse_qs(url.query)['city'][0]
     state = parse_qs(url.query)['state'][0]
     location = Location(city, state)
-    # people_live_in = location.get_people_live_in(city)
+    people_live_in = location.get_people_live_in(city)
     distances = location.get_dist()
     dist_dict = {}
     for elem in distances:
@@ -103,8 +103,8 @@ def info_city():
         if temp1 not in dist_dict:
             dist_dict[temp1] = dict(temp2[0])
 
-    # return render_template('info_city.html', city = location, people_live_in = people_live_in, distances=dist_dict)
-    return render_template('info_city.html', city=location, distances=dist_dict)
+    return render_template('info_city.html', city = location, people_live_in = people_live_in, distances=dist_dict)
+    # return render_template('info_city.html', city=location, distances=dist_dict)
     # return render_template('info_city.html', city = location)
 
 
@@ -140,3 +140,12 @@ def add_birthplace():
     p = list_all_people()
     l = list_all_locations()
     return render_template('add_residentcity.html', persons=p, locations=l)
+
+@app.route('/search', methods=['GET','POST'])
+def search_person():
+    if request.method == 'POST':
+        name = request.form['name']
+        return redirect(url_for('info_person') + "?name=" + name)
+
+    p = list_all_people()
+    return render_template('search_person.html', persons = p)

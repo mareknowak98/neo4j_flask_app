@@ -127,13 +127,17 @@ class Location:
     def _find_and_return_distance(tx, query):
         result = tx.run(query)
         return [[row["city"], row["relations"]] for row in result]
+
     def get_dist(self):
         query = "OPTIONAL MATCH a= (Location {city: '" + self.city + "', state: '" + self.state + "'}) -[:DIST]-(city) RETURN relationships(a) as relations, city.city as city"
         with graph.session(database="neo4j") as session:
             result = session.execute_read(self._find_and_return_distance, query)
-            for elem in result:
-                print(elem)
             return result
+
+    def get_people_live_in(self, city):
+        query = "OPTIONAL MATCH (a:Person)-[r:LIVE_IN]-(b:Location {city:'" + self.city + "'}) RETURN a.name as name, b.city as city"
+        result = execute_query(query)
+        return result
 
 
 def list_all_people():

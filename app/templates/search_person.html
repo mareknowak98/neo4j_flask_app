@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Wybierz osobę, której informacje chcesz znaleźć:</h2>
+<h2>Select person to find detailed informations</h2>
 
 <form action="{{ url_for('search_person') }}" method="post">
 <div class="input-group">
     <select name="name" class="custom-select">
         {% for row in persons %}
-        <option value="{{ row[0]['data']['name'] }}" class="list-group-item list-group-item-action">{{ row[0]['data']['name'] }}</option>
+        <option value="{{ row['name'] }}" class="list-group-item list-group-item-action">{{ row['name'] }}</option>
         {% endfor %}
     </select>
     <div class="input-group-append">
-        <input type="submit" value="Wyszukaj" class="btn btn-outline-secondary btn-style">
+        <input type="submit" value="Search" class="btn btn-outline-secondary btn-style">
     </div>
 </div>
 </form>

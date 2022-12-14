@@ -15,7 +15,7 @@
 {% if friends %}
 <ul class="list-group">
     {% for row in friends %}
-        <li onclick="location.href='/person/info?name={{ row['b']['name'] }}" class="list-group-item list-group-item-action">{{ row['b']['name'] }}</li>
+        <li onclick="location.href='/person/info?name={{ row['b']['name'] }}'" class="list-group-item list-group-item-action">{{ row['b']['name'] }}</li>
     {% endfor %}
 </ul>
 {% else %}
