@@ -8,24 +8,24 @@
     padding: 2em;
 }
 .jumbotron2{
-
+    background-color: dodgerblue;
 }
 
 .navbar{
-    background-color: #42a5f5;
+    background-color: dodgerblue;
 }
 .table td{
-    background-color: gray;
+    background-color: dodgerblue;
 }
 .table .thead-dark th{
-    background-color: gray;
-    border-color: gray;
+    background-color: dodgerblue;
+    border-color: dodgerblue;
 }
 .btn-style{
-    background-color: gray;
+    background-color: dodgerblue;
 }
 .list-group-item-style{
-    background-color: gray;
+    background-color: dodgerblue;
 }
 
 #wrapper {

@@ -27,10 +27,7 @@ def info_person():
     person = Person(name)
     residentcity = person.get_birthplace()
     friends = person.get_friends()
-    print(friends[0]['b'])
     return render_template('info_person.html', name=name, residentcity=residentcity, friends=friends)
-    # return render_template('info_person.html', name = name, friends = friends)
-    # return render_template('info_person.html', name = name)
 
 
 @app.route('/person/add', methods=['GET', 'POST'])
@@ -128,3 +125,18 @@ def add_distance():
     c1 = list_all_locations()
     c2 = list_all_locations()
     return render_template('add_distance.html', city1=c1, city2=c2)
+
+###
+
+
+@app.route('/person/liveplace/add', methods=['GET','POST'])
+def add_birthplace():
+    if request.method == 'POST':
+        location = request.form['location']
+        l = location.split(",")
+        name =  request.form['name']
+        Person(name).add_birthplace(Location(l[0][2:-1], l[1][2:-2]))
+        return redirect(url_for('index'))
+    p = list_all_people()
+    l = list_all_locations()
+    return render_template('add_residentcity.html', persons=p, locations=l)

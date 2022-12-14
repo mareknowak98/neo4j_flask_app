@@ -69,6 +69,14 @@ class Person:
         result = execute_query(query)
         return result
 
+    def add_birthplace(self, place):
+        if self.find() and place.find():
+            query = "MATCH(a:Person {name:'" + self.name + "'}),(b:Location {city:'" + place.city + "', state:'" + place.state + "'}) MERGE(a)-[r:LIVE_IN]->(b) RETURN a,b"
+            execute(query)
+            return True
+        else:
+            return False
+
     def get_birthplace(self):
         query = "OPTIONAL MATCH (a:Person {name:'" + self.name + "'})-[r:LIVE_IN]-(b:Location) RETURN b.city as city, b.state as state"
         result = execute_query(query)

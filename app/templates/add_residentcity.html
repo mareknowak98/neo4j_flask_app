@@ -1,32 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Dodaj miejce zamieszkania:</h2>
+<h2>Add persons's city:</h2>
 
 <form action="{{ url_for('add_birthplace') }}" method="post">
 <div class="input-group">
 	<dl>
-	<dt>Osoba:</dt>
+	<dt>Person:</dt>
 	 <dd>
 	 	<select name="name" class="custom-select">
         {% for row in persons %}
-        <option value="{{ row[0]['data']['name'] }}" class="list-group-item">{{ row[0]['data']['name'] }}</option>
+        <option value="{{ row['name'] }}" class="list-group-item">{{ row['name'] }}</option>
         {% endfor %}
     	</select>
 	</dd>
 
-	<dt>Miasto:</dt>
+	<dt>City:</dt>
     <dd><select name="location" class="custom-select">
         {% for row in locations %}
-        <option value="{{ row[0]['data']['city'], row[0]['data']['state'] }}" class="list-group-item">{{ row[0]['data']['city'], row[0]['data']['state']  }}</option>
+        <option value="{{ row['city'], row['state'] }}" class="list-group-item">{{ row['city'], row['state']  }}</option>
         {% endfor %}
         </select>
    	</dd>
    
 	<dd>
-    <div class="input-group-append">
-        <input type="submit" value="Dodaj miejsce urodzenia" class="btn btn-outline-secondary btn-style">
-    </div>
+        <div class="input-group-append">
+            <input type="submit" value="Dodaj miejsce urodzenia" class="btn btn-outline-secondary btn-style">
+        </div>
    	<dd>
     </dl>
 </div>
