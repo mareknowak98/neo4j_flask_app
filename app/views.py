@@ -52,6 +52,16 @@ def delete_person():
     return render_template('delete_person.html', people = p)
 
 
+@app.route('/friends/connect', methods=['GET','POST'])
+def add_friend():
+    if request.method == 'POST':
+        person1 = request.form['person1']
+        person2 = request.form['person2']
+        Person(person1).add_friend(Person(person2))
+        return redirect(url_for('index'))
+    p1 = list_all_people()
+    return render_template('add_friend.html', persons1 = p1, persons2 = p1)
+
 # Locations endpoints
 @app.route('/location/add', methods=['GET','POST'])
 def add_location():
@@ -89,7 +99,8 @@ def info_city():
     for elem in distances:
         temp1 = elem[0]
         temp2 = elem[1]
-        dist_dict[temp1] = dict(temp2[-1])
+        if temp1 not in dist_dict:
+            dist_dict[temp1] = dict(temp2[0])
 
     # return render_template('info_city.html', city = location, people_live_in = people_live_in, distances=dist_dict)
     return render_template('info_city.html', city=location, distances=dist_dict)

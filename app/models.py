@@ -2,12 +2,15 @@ from neo4j import GraphDatabase
 import logging
 from neo4j.exceptions import ServiceUnavailable
 
-graph = GraphDatabase.driver('neo4j+s://1baf8087.databases.neo4j.io', auth=('neo4j', 'GHvoYzAKuJrA88v8eDuoYhfZ3538urq-07A_0OCcz-I'))
+graph = GraphDatabase.driver('neo4j+s://a4565860.databases.neo4j.io', auth=('neo4j', 'C7pmAvK6mg12fPB7frIUUQksvuOWAJ8nutIBwzmT7aQ'))
 
 # simple function to wrap running query
 def execute(query):
     with graph.session(database="neo4j") as session:
         return session.run(query)
+
+# def create_node(tx, query):
+#     tx.run(query)
 
 
 class Person:
@@ -21,13 +24,15 @@ class Person:
 
     @staticmethod
     def _find_and_return_person(tx, name):
-        query = "CREATE(n:Person {name:'" + name + "'})"
+        query = "MATCH (n:Person {name: '" + name + "'}) RETURN n"
         result = tx.run(query)
         return [row["name"] for row in result]
 
     def add(self):
         if not self.find():
             query = "CREATE(n:Person {name:'" + self.name + "'})"
+            # session = graph.session()
+            # session.execute_write(create_node(query))
             execute(query)
             return True
         else:
@@ -40,6 +45,15 @@ class Person:
             query = "MATCH (p:Person {name: '" + self.name + "'}) DETACH DELETE p "
             execute(query)
             return True
+
+    ### relations management
+    def add_friend(self, person):
+        if self.find() and person.find():
+            query = "MATCH(a:Person {name:'" + self.name + "'}),(b:Person {name:'" + person.name + "'}) MERGE(a)-[r:FRIENDS]->(b) RETURN a,b"
+            execute(query)
+            return True
+        else:
+            return False
 
 
 class Location:
