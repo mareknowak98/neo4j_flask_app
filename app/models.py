@@ -13,6 +13,15 @@ def execute(query):
 #     tx.run(query)
 
 
+def qr(tx, query):
+    result = tx.run(query)
+    return [dict(row) for row in result]
+
+
+def execute_query(query):
+    with graph.session(database="neo4j") as session:
+        return session.read_transaction(qr, query)
+
 class Person:
     def __init__(self, name):
         self.name = name
@@ -26,7 +35,7 @@ class Person:
     def _find_and_return_person(tx, name):
         query = "MATCH (n:Person {name: '" + name + "'}) RETURN n"
         result = tx.run(query)
-        return [row["name"] for row in result]
+        return [dict(row) for row in result]
 
     def add(self):
         if not self.find():
@@ -55,6 +64,15 @@ class Person:
         else:
             return False
 
+    def get_friends(self):
+        query = "OPTIONAL MATCH (a:Person {name:'" + self.name + "'})-[r:FRIENDS]-(b:Person) RETURN b"
+        result = execute_query(query)
+        return result
+
+    def get_birthplace(self):
+        query = "OPTIONAL MATCH (a:Person {name:'" + self.name + "'})-[r:LIVE_IN]-(b:Location) RETURN b.city as city, b.state as state"
+        result = execute_query(query)
+        return result
 
 class Location:
     def __init__(self, city, state):
@@ -118,7 +136,7 @@ def list_all_people():
 def query_all_people(tx):
     query = "MATCH (p:Person) RETURN p.name AS name"
     result = tx.run(query)
-    return [row["name"] for row in result]
+    return [dict(row) for row in result]
 
 
 def query_all_locations(tx):

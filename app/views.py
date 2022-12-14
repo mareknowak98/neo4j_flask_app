@@ -25,9 +25,11 @@ def info_person():
     name = parse_qs(url.query)['name'][0]
     person = Person(name)
     # residentcity = person.get_birthplace()
-    # friends = person.get_friends()
+    friends = person.get_friends()
+    print(friends)
     # return render_template('info_person.html', name = name, residentcity = residentcity, friends = friends)
-    return render_template('info_person.html', name = name)
+    return render_template('info_person.html', name = name, friends = friends)
+    # return render_template('info_person.html', name = name)
 
 
 @app.route('/person/add', methods=['GET','POST'])

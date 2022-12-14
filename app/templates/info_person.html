@@ -12,13 +12,13 @@
 {#<br>#}
 {#<h4>Lista znajomych:</h4>#}
 {##}
-{#{% if friends[0][0] %}#}
-{#<ul class="list-group">#}
-{#        {% for row in friends %}#}
-{#            <li onclick="location.href='/person/info?name={{ row[0]['data']['name'] }}'" class="list-group-item list-group-item-action">{{ row[0]['data']['name'] }}</li>#}
-{#        {% endfor %}#}
-{#</ul>#}
-{#{% else %}#}
-{#Brak #}
-{#{%endif %}#}
+{% if friends %}
+<ul class="list-group">
+        {% for row in friends %}
+            <li onclick="location.href='/person/info?name={{ row['name'] }}'" class="list-group-item list-group-item-action">{{ row['name'] }}</li>
+        {% endfor %}
+</ul>
+{% else %}
+None
+{%endif %}
 {% endblock %}
