@@ -3,20 +3,20 @@
 
 <h2>User {{ name }}:</h2>
 <br>
-{#<h4>Miejsce zamieszkania:</h4>#}
-{#{% if residentcity[0][0] %}#}
-{#Miasto: {{ residentcity[0][0] }}, Województwo: {{ residentcity[0][1] }}#}
-{#{% else %}#}
-{#Nie podano.#}
-{#{%endif %}#}
-{#<br>#}
-{#<h4>Lista znajomych:</h4>#}
-{##}
+<h4>City:</h4>
+{% if residentcity %}
+    City: {{ residentcity['city'] }}, Voivodeship: {{ residentcity['state'] }}
+    {% else %}
+    None
+{%endif %}
+<br>
+<h4>Friends:</h4>
+
 {% if friends %}
 <ul class="list-group">
-        {% for row in friends %}
-            <li onclick="location.href='/person/info?name={{ row['name'] }}'" class="list-group-item list-group-item-action">{{ row['name'] }}</li>
-        {% endfor %}
+    {% for row in friends %}
+        <li onclick="location.href='/person/info?name={{ row['b']['name'] }}" class="list-group-item list-group-item-action">{{ row['b']['name'] }}</li>
+    {% endfor %}
 </ul>
 {% else %}
 None

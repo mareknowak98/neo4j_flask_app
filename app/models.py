@@ -20,7 +20,7 @@ def qr(tx, query):
 
 def execute_query(query):
     with graph.session(database="neo4j") as session:
-        return session.read_transaction(qr, query)
+        return session.execute_read(qr, query)
 
 class Person:
     def __init__(self, name):

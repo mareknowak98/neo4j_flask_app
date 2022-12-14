@@ -4,35 +4,36 @@ from .models import Person, Location, list_all_people, list_all_locations
 import os
 
 
-
 def create_app():
     app = Flask(__name__)
     return app
 
-app=create_app()
+
+app = create_app()
 app.secret_key = os.urandom(24)
 
-@app.route('/', methods=['GET','POST'])
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
     people = list_all_people()
     locations = list_all_locations()
     return render_template('index.html', people=people, locations=locations)
 
 
-@app.route('/person/info', methods=['GET','POST'])
+@app.route('/person/info', methods=['GET', 'POST'])
 def info_person():
     url = urlparse(request.url)
     name = parse_qs(url.query)['name'][0]
     person = Person(name)
-    # residentcity = person.get_birthplace()
+    residentcity = person.get_birthplace()
     friends = person.get_friends()
-    print(friends)
-    # return render_template('info_person.html', name = name, residentcity = residentcity, friends = friends)
-    return render_template('info_person.html', name = name, friends = friends)
+    print(friends[0]['b'])
+    return render_template('info_person.html', name=name, residentcity=residentcity, friends=friends)
+    # return render_template('info_person.html', name = name, friends = friends)
     # return render_template('info_person.html', name = name)
 
 
-@app.route('/person/add', methods=['GET','POST'])
+@app.route('/person/add', methods=['GET', 'POST'])
 def add_person():
     if request.method == 'POST':
         name = request.form['name']
@@ -43,7 +44,7 @@ def add_person():
     return render_template('add_person.html')
 
 
-@app.route('/person/delete', methods=['GET','POST'])
+@app.route('/person/delete', methods=['GET', 'POST'])
 def delete_person():
     if request.method == 'POST':
         name = request.form['name']
@@ -51,10 +52,10 @@ def delete_person():
         return redirect(url_for('index'))
 
     p = list_all_people()
-    return render_template('delete_person.html', people = p)
+    return render_template('delete_person.html', people=p)
 
 
-@app.route('/friends/connect', methods=['GET','POST'])
+@app.route('/friends/connect', methods=['GET', 'POST'])
 def add_friend():
     if request.method == 'POST':
         person1 = request.form['person1']
@@ -62,10 +63,11 @@ def add_friend():
         Person(person1).add_friend(Person(person2))
         return redirect(url_for('index'))
     p1 = list_all_people()
-    return render_template('add_friend.html', persons1 = p1, persons2 = p1)
+    return render_template('add_friend.html', persons1=p1, persons2=p1)
+
 
 # Locations endpoints
-@app.route('/location/add', methods=['GET','POST'])
+@app.route('/location/add', methods=['GET', 'POST'])
 def add_location():
     if request.method == 'POST':
         city = request.form['city']
@@ -77,7 +79,7 @@ def add_location():
     return render_template('add_location.html')
 
 
-@app.route('/location/delete', methods=['GET','POST'])
+@app.route('/location/delete', methods=['GET', 'POST'])
 def delete_location():
     if request.method == 'POST':
         location = request.form['location']
@@ -86,7 +88,7 @@ def delete_location():
         return redirect(url_for('index'))
 
     loc = list_all_locations()
-    return render_template('delete_location.html', locations = loc)
+    return render_template('delete_location.html', locations=loc)
 
 
 @app.route('/city/info', methods=['GET'])
@@ -109,7 +111,7 @@ def info_city():
     # return render_template('info_city.html', city = location)
 
 
-@app.route('/distance/add', methods=['GET','POST'])
+@app.route('/distance/add', methods=['GET', 'POST'])
 def add_distance():
     if request.method == 'POST':
         city1 = request.form['city1']
