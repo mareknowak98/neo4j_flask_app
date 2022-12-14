@@ -104,8 +104,6 @@ def info_city():
             dist_dict[temp1] = dict(temp2[0])
 
     return render_template('info_city.html', city = location, people_live_in = people_live_in, distances=dist_dict)
-    # return render_template('info_city.html', city=location, distances=dist_dict)
-    # return render_template('info_city.html', city = location)
 
 
 @app.route('/distance/add', methods=['GET', 'POST'])

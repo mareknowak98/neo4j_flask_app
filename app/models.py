@@ -12,6 +12,9 @@ def execute(query):
 # def create_node(tx, query):
 #     tx.run(query)
 
+def qr_plain(tx, query):
+    result = tx.run(query)
+    return result
 
 def qr(tx, query):
     result = tx.run(query)
@@ -78,9 +81,14 @@ class Person:
             return False
 
     def get_birthplace(self):
-        query = "OPTIONAL MATCH (a:Person {name:'" + self.name + "'})-[r:LIVE_IN]-(b:Location) RETURN b.city as city, b.state as state"
+        query = "OPTIONAL MATCH (a:Person {name:'" + self.name + "'})-[r:LIVE_IN]-(b:Location) RETURN b"
+        # with graph.session(database="neo4j") as session:
+        #     result = session.read_transaction(qr_plain, query)
+        # print([dict(row) for row in result])
         result = execute_query(query)
+        print(result)
         return result
+        # return [dict(row) for row in result]
 
 class Location:
     def __init__(self, city, state):

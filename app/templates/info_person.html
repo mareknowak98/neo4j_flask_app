@@ -5,7 +5,9 @@
 <br>
 <h4>City:</h4>
 {% if residentcity %}
-    City: {{ residentcity['city'] }}, Voivodeship: {{ residentcity['state'] }}
+    {% for row in residentcity %}
+        <p> City: {{ row['b']['city'] }}, Voivodeship: {{ row['b']['state'] }} </p>
+    {% endfor %}
     {% else %}
     None
 {%endif %}
